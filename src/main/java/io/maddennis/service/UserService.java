@@ -4,6 +4,10 @@ import io.maddennis.entity.User;
 import io.maddennis.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,8 +64,17 @@ public class UserService {
     }
 
     @Async
-    public CompletableFuture<List<User>> getUsers() {
+    public CompletableFuture<List<User>> getUsers(Integer pageNo, Integer pageSize, String sortBy) {
         log.info("Fetching users from the DB. Thread {}", Thread.currentThread().getName());
-        return CompletableFuture.completedFuture(userRepository.findAll());
+
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<User> pagedResult = userRepository.findAll(paging);
+
+        if(pagedResult.hasContent()) {
+            return CompletableFuture.completedFuture(pagedResult.getContent());
+        } else {
+            return CompletableFuture.completedFuture(new ArrayList<>());
+        }
+        //return CompletableFuture.completedFuture(userRepository.findAll());
     }
 }

@@ -31,18 +31,9 @@ public class UserController {
     }
 
     @GetMapping(path = "/getAllUsers", produces = "application/json")
-    public CompletableFuture<ResponseEntity> getUsers() {
-        return userService.getUsers().thenApply(ResponseEntity::ok);
+    public CompletableFuture<ResponseEntity> getUsers(Integer pageNo, Integer pageSize, String sortBy) {
+        return userService.getUsers(pageNo,pageSize,sortBy).thenApply(ResponseEntity::ok);
     }
 
-    @GetMapping(value = "/getUsersByThread", produces = "application/json")
-    public  ResponseEntity findAllUsers(){
 
-        CompletableFuture<List<User>> users1=userService.getUsers();
-        CompletableFuture<List<User>> users2=userService.getUsers();
-        CompletableFuture<List<User>> users3=userService.getUsers();
-
-        CompletableFuture.allOf(users1,users2,users3).join();
-        return  ResponseEntity.status(HttpStatus.OK).build();
-    }
 }
