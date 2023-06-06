@@ -1,6 +1,5 @@
 package io.maddennis.controller;
 
-import io.maddennis.entity.User;
 import io.maddennis.service.UserService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -31,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/getAllUsers", produces = "application/json")
-    public CompletableFuture<ResponseEntity> getUsers(Integer pageNo, Integer pageSize, String sortBy) {
+    public CompletableFuture<ResponseEntity<?>> getUsers(Integer pageNo, Integer pageSize, String sortBy) {
         return userService.getUsers(pageNo,pageSize,sortBy).thenApply(ResponseEntity::ok);
     }
 

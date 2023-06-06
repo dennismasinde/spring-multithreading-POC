@@ -29,7 +29,6 @@ public class UserService {
     @Async
     public CompletableFuture<List<User>> saveUsers(MultipartFile file) throws Exception {
         long start = System.currentTimeMillis();
-
         List<User> users = parseCSVFile(file);
         log.info("Saving {} users to database. Thread {}", users.size(), Thread.currentThread().getName());
         userRepository.saveAll(users);
@@ -45,6 +44,7 @@ public class UserService {
             try (final BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
                 String line;
                 while ((line = br.readLine()) != null) {
+
                     final String [] data = line.split(",");
                     final User user = new User();
 
@@ -53,6 +53,7 @@ public class UserService {
                     user.setEmail(data[2]);
                     user.setGender(data[3]);
                     user.setIpAddress(data[4]);
+
                     users.add(user);
                 }
                 return users;
@@ -75,6 +76,5 @@ public class UserService {
         } else {
             return CompletableFuture.completedFuture(new ArrayList<>());
         }
-        //return CompletableFuture.completedFuture(userRepository.findAll());
     }
 }
